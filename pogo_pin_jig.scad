@@ -20,30 +20,31 @@
 // These options can be overridden when calling "make", e.g.:
 // make svg 
 
+// Pin definitions
+// Number of rows to be placed in the jig (along X axis)
+ROWS = 2;
+// Number of columns to be placed in the jig (along Y axis)
+COLS = 5;
+PITCH = 1.27;
+PIN_DIAMETER = 1;
+
+
 // Block size (if using, set AUTOSIZE=false)
 LENGTH = 1;
 WIDTH = 1;
 HEIGHT = 5;
+AUTOSIZE = true;
 
 IS_CENTERED = true;
 OFFSET_X = 0;
 OFFSET_Y = 0;
 
-// Pin definitions
-PIN_DIAMETER = 1;
-PITCH = 1.27;
-ROWS = 2;
-COLS = 5;
-
+// Global configurations, these shouldn't need to be changed
+2D = false;
+debug = true;
 
 assert (PIN_DIAMETER < PITCH, 
   "Your PIN_DIAMETER is larger than your pin PITCH.");
-
-// Global configurations, these shouldn't need to be changed
-2D=false;
-AUTOSIZE=true;
-debug = true;
-
 
 // helpers
 pin_block_length = PITCH * COLS;

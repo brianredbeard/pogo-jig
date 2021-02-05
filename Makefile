@@ -16,8 +16,25 @@
 # along with PPRT.  If not, see <https://www.gnu.org/licenses/>.
 
 MODEL = pogo_pin_jig
+
+#######
+# Begin configurable overrides
+#######
 ROWS = 5
 COLS = 2
+PITCH = 2.54
+LENGTH = 1
+WIDTH = 1
+HEIGHT = 5
+IS_CENTERED = true
+OFFSET_X = 0
+OFFSET_Y = 0
+PIN_DIAMETER = 1
+AUTOSIZE=true
+#######
+# End configurable overrides
+#######
+
 
 output = output
 
@@ -25,9 +42,14 @@ IMAGES = png
 2D = dxf svg
 3D = stl
 
-PHONY: $(IMAGES) $(2D) $(3D)
+PHONY: $(IMAGES) $(2D) $(3D) get-vars
 
-OPTIONS = -D ROWS=$(ROWS) -D COLS=$(COLS)
+OPTIONS = -D ROWS=$(ROWS) -D COLS=$(COLS) -D PITCH=$(PITCH)
+
+#######
+# Basic OS detection for displaying the image file
+# Note: Windows / MacOS is untested at the moment
+#######
 
 ifeq ($(OS),Windows_NT)
     START = start 
@@ -57,6 +79,13 @@ $(3D): output
 
 model:
 	openscad 
-
+	
+# This is a "helper" action to grab all relevant variables from the 
+get-vars:
+	@echo  -e "# Outputting variables for definition in Makefile\n"
+	@grep -B1 "^[A-Z]" pogo_pin_jig.scad   | sed -e 's|;$$||g' -e 's|^--||g' -e 's|^//|# |g'
+	@echo ""
+	@echo  -e "# Outputting variables for OPTIONS =\n"
+	@awk -F '[[:space:]]*=[[:space:]]*' '/^[A-Z]+/ {split($$2, val, /;/); printf " -D %s=%s", $$1, val[1]} END {print ""}' pogo_pin_jig.scad
 clean:
 	-rm -rf $(output)
