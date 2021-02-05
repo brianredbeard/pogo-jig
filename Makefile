@@ -31,12 +31,11 @@ OFFSET_X = 0
 OFFSET_Y = 0
 PIN_DIAMETER = 1
 AUTOSIZE=true
+OUTPUT_DIR = output
 #######
 # End configurable overrides
 #######
 
-
-output = output
 
 IMAGES = png 
 2D = dxf svg
@@ -63,24 +62,24 @@ else
     endif
 endif
 
-output:
-	mkdir -p output
+OUTPUT_DIR:
+	mkdir -p $(OUTPUT_DIR)
 
-$(IMAGES): output
-	openscad --render --imgsize=1280,800 --autocenter --viewall -o $(output)/$(MODEL)-row$(ROWS)-col$(COLS).$@ $(OPTIONS) $(MODEL).scad
-	$(START) $(output)/$(MODEL)-row$(ROWS)-col$(COLS).$@
+$(IMAGES): OUTPUT_DIR
+	openscad --render --imgsize=1280,800 --autocenter --viewall -o $(OUTPUT_DIR)/$(MODEL)-rows$(ROWS)-cols$(COLS)-pitch$(PITCH)mm.$@ $(OPTIONS) $(MODEL).scad
+	$(START) $(OUTPUT_DIR)/$(MODEL)-rows$(ROWS)-cols$(COLS)-pitch$(PITCH)mm.$@
 
-$(2D): output
-	openscad -o $(output)/$(MODEL)-row$(ROWS)-col$(COLS).$@ $(OPTIONS) -D 2D=true $(MODEL).scad
+$(2D): OUTPUT_DIR
+	openscad -o $(OUTPUT_DIR)/$(MODEL)-rows$(ROWS)-cols$(COLS)-pitch$(PITCH)mm.$@ $(OPTIONS) -D 2D=true $(MODEL).scad
 
 
-$(3D): output
-	openscad -o $(output)/$(MODEL)-row$(ROWS)-col$(COLS).$@ $(OPTIONS) $(MODEL).scad
+$(3D): OUTPUT_DIR
+	openscad -o $(OUTPUT_DIR)/$(MODEL)-rows$(ROWS)-cols$(COLS)-pitch$(PITCH)mm.$@ $(OPTIONS) $(MODEL).scad
 
 model:
 	openscad 
 	
-# This is a "helper" action to grab all relevant variables from the 
+# This is a "helper" action to grab all relevant variables from the scad source
 get-vars:
 	@echo  -e "# Outputting variables for definition in Makefile\n"
 	@grep -B1 "^[A-Z]" pogo_pin_jig.scad   | sed -e 's|;$$||g' -e 's|^--||g' -e 's|^//|# |g'
@@ -88,4 +87,4 @@ get-vars:
 	@echo  -e "# Outputting variables for OPTIONS =\n"
 	@awk -F '[[:space:]]*=[[:space:]]*' '/^[A-Z]+/ {split($$2, val, /;/); printf " -D %s=%s", $$1, val[1]} END {print ""}' pogo_pin_jig.scad
 clean:
-	-rm -rf $(output)
+	-rm -rf $(OUTPUT_DIR)
