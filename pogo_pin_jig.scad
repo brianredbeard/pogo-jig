@@ -25,7 +25,12 @@
 ROWS = 2;
 // Number of columns to be placed in the jig (along Y axis)
 COLS = 5;
-PITCH = 1.27;
+// Pitch spacing between each pin
+PITCH = 2.54;
+// Diameter of the hole for the pin 
+// Note: 3D printers typically undersize the holes, thus you may need to make
+// this bigger than expected. Make a 1x2 or 2x2 version and test for optimal
+// sizing.
 PIN_DIAMETER = 1;
 
 
@@ -56,16 +61,16 @@ render_width = (AUTOSIZE && (WIDTH < pin_block_width)) ? pin_block_width + 1 : W
 render_height = HEIGHT;
 
 // check if pin block should be "centered"
-vx = (IS_CENTERED) ? (render_length - pin_block_length) / 2 : 0;
-vy = (IS_CENTERED) ? (render_width - pin_block_width) / 2 : 0;
+pinblock_start_X = (IS_CENTERED) ? (render_length - pin_block_length) / 2 : 0;
+pinblock_start_Y = (IS_CENTERED) ? (render_width - pin_block_width) / 2 : 0;
 
 
 // print calculations to the console if needed
 if (debug) {
   echo("pin_block_length: ", pin_block_length);
   echo("pin_block_width: ", pin_block_width);
-  echo("Pinblock start X: ", vx);
-  echo("Pinblock start Y: ", vy);
+  echo("pinblock_start_X: ", pinblock_start_X);
+  echo("pinblock_start_Y: ", pinblock_start_Y);
   echo("render_length: ", render_length);
   echo("render_width: ", render_width);
   echo("render_height: ", render_height);
@@ -93,13 +98,13 @@ if (2D) {
   projection(cut=true)
   difference(){
     cube([render_length,render_width,render_height]);
-    translate ([vx + OFFSET_X,vy + OFFSET_Y,0])
+    translate ([pinblock_start_X + OFFSET_X,pinblock_start_Y + OFFSET_Y,0])
     gen_pinblock();
   }
 } else {
   difference(){
     cube([render_length,render_width,render_height]);
-    translate ([vx + OFFSET_X,vy + OFFSET_Y,0])
+    translate ([pinblock_start_X + OFFSET_X,pinblock_start_Y + OFFSET_Y,0])
     gen_pinblock();
   }
 }
