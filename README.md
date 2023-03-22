@@ -1,5 +1,7 @@
 # 3d printer pogo jig
 
+![image](https://user-images.githubusercontent.com/57542/227043011-9fce1461-f078-42fc-b86f-475b71b8e7ef.png)
+
 ## about
 
 This provides the initial proof of concept (POC) for a tool to generate
